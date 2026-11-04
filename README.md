@@ -204,6 +204,7 @@ the work started (2026-11-02) FF7 ran at about half speed on it. Each row adds o
 | 11-04 | Faster battle loading (`load_accel`) | entering a battle | 0.43-0.48x | 0.53-0.65x |
 | 11-04 | **Asynchronous present**, GL render thread on by default | battle | 0.67x | **0.80-0.90x (+26%)** |
 | 11-04 | **One upload per batch** for 24-bit screens | Sony / Squaresoft startup screens | 0.30x | **0.82-0.98x** |
+| 11-04 | **Movie decoding**: batched decoder DMA, CD event fix, idle skip for the movie's frame wait | opening movie | 0.27x | **0.73x** |
 
 Where it stands with this repository's defaults: about **0.8-0.9x** at the spot right off the opening train, about
 **0.7-0.8x** in heavier areas later on, and **0.8-0.9x** during battles. Audio crackles when it is under full speed.
@@ -238,6 +239,11 @@ Work done on this port, with the reason for each (the engine changes are on
   small pieces a second, and each piece cost two texture uploads with a large fixed cost in the V30's graphics driver.
   Each batch of pieces is now uploaded once, and only the pieces themselves are drawn from it. This also fixed batches
   of more than eight pieces drawing some of them from the wrong upload.
+- **Movies** (the opening movie: 0.27x to about 0.73x on the V30). While a movie streams, the engine kept the PS1's
+  devices in step about 230,000 times a second. Three changes: the movie decoder's output now reaches RAM in 32-word
+  batches instead of one word per event (`dma_word_batch = 32` under `[runtime]` in `game\game.toml.in`, the same
+  batching upstream psxrecomp uses); the CD drive no longer reports an already-delivered response as due every few
+  cycles until the game acknowledges it; and the idle skip now recognises FF7's "wait for the next movie frame" loop.
 - **This repository**: one place to build everything, the copyright guard, and build scripts that also work on locked-
   down PCs (PowerShell's Constrained Language Mode).
 
@@ -245,10 +251,8 @@ Work done on this port, with the reason for each (the engine changes are on
 
 - **Under full speed on older phones**: battles on the LG V30 run at 0.8-0.9x and some menus slower, and the audio
   crackles while the game runs slower than full speed.
-- **Movies are slow on the LG V30**: the opening movie runs at about 0.3x (the startup screens before it are now at
-  0.8-1.0x). While a movie streams from the disc, the engine keeps the PS1's timers, CD drive, movie decoder and sound
-  in step about 230,000 times a second, and that is what the V30's CPU cannot keep up with; this is not caused by
-  faster battle loading. On the Pixel 8 the same movie plays at full speed. Being worked on.
+- **Movies are under full speed on the LG V30**: the opening movie runs at about 0.7x (it was 0.3x). On the Pixel 8
+  it plays at full speed.
 - **Dark rectangles where FF7 draws a glow** in some places with the GPU renderer (the Software renderer draws them
   right). Being looked into.
 - **Two pieces of FF7's disc code do not pre-compile**; they run on the engine's interpreter (slower, still correct).
@@ -257,7 +261,7 @@ Work done on this port, with the reason for each (the engine changes are on
 
 ## What's next
 
-- The slow movies on the V30 (cheaper device timing while a movie streams).
+- The rest of the movie speed on the V30, and moving this port onto the newer upstream engine.
 - The slow menus on the V30.
 - The dark-rectangle glow bug in the GPU renderer.
 - A full build on a PC with nothing installed, and retail FF7 discs.
