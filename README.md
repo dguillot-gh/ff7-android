@@ -22,21 +22,23 @@ speed: the FPS figure at the right is the game's own counter.
 <p><em>The first field scene, right off the opening train, with the on-screen pad.</em></p>
 
 <p>
-  <img src="docs/images/pixel8-battle.png" width="49%" alt="Pixel 8: the first battle against two MPs, battle menu open, 60 FPS">
+  <img src="docs/images/pixel8-battle.png" width="49%" alt="Pixel 8: the first battle, Cloud's Limit Break ready in the battle menu, 60 FPS">
+  <img src="docs/images/pixel8-battle-hit.png" width="49%" alt="Pixel 8: the first battle, an MP hits Cloud for 118, 60 FPS">
+</p>
+<p><em>The first battle: the Limit Break ready (left) and a hit in the middle of the fight (right).</em></p>
+
+<p>
   <img src="docs/images/pixel8-movie.png" width="49%" alt="Pixel 8: the opening movie, 60 FPS">
-</p>
-<p><em>The first battle (left) and the opening movie (right).</em></p>
-
-<p>
   <img src="docs/images/pixel8-title.png" width="49%" alt="Pixel 8: the title screen with New Game and Continue">
-  <img src="docs/images/pixel8-menu.png" width="49%" alt="Pixel 8: the field menu on the Cargo Ship, 60 FPS">
 </p>
-<p><em>The title screen (left) and the field menu, later on the Cargo Ship (right).</em></p>
+<p><em>The opening movie (left) and the title screen (right).</em></p>
 
 <p>
-  <img src="docs/images/pixel8-launcher.png" width="60%" alt="The start screen: Continue, Play, Select game file, Import memory card">
+  <img src="docs/images/pixel8-menu.png" width="49%" alt="Pixel 8: the field menu on the Cargo Ship, 60 FPS">
+  <img src="docs/images/pixel8-launcher.png" width="49%" alt="The start screen: Continue, Play, Select game file, Import memory card">
 </p>
-<p><em>The app's start screen: Continue from a save slot, Play, pick your discs, or import a memory card of your own.</em></p>
+<p><em>The field menu, later on the Cargo Ship (left), and the app's start screen: Continue from a save slot, Play,
+pick your discs, or import a memory card of your own (right).</em></p>
 
 ## Contents
 
