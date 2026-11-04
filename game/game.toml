@@ -67,3 +67,15 @@ allow_hybrid = false
 require_cue = true
 required_tracks = 1
 required_disc_fp = "cbcc0d4f2503b4ffc69c53feb701bef5990bc5279dc13e65855bcd77b7d44d51"
+
+# Load acceleration (load_accel.c), verified 2026-11-04 against FF7's PsyQ VSync at 0x8003CEDC:
+# same instruction layout as the Tomba model (only the lui page constant differs, never live).
+# VSync(-1) skips its two unused MMIO reads; at the libcd CD wait-loop returns below, while a CD
+# data load is in progress, guest time advances to the next device event (battle loading).
+[load_accel.vsync_query]
+func = "0x8003CEDC"
+counter_addr = "0x80051568"
+gpustat_ptr_addr = "0x8005049C"
+timer1_ptr_addr = "0x800504A0"
+timer1_cache_addr = "0x800504A4"
+event_horizon_sites = ["0x8003EA50", "0x8003ECDC", "0x80041E60", "0x80041E90"]
