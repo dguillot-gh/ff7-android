@@ -173,9 +173,10 @@ the work started (2026-11-02) FF7 ran at about half speed on it. Each row adds o
 | 11-04 | **"Stable" texture filter** (smooth 3D, sharp 2D) | | seams on backgrounds | **seams gone** |
 | 11-04 | GL render thread (optional, see below) | a later save, standing | 0.707x | **0.807x (+14%)** |
 | 11-04 | Faster battle loading (`load_accel`) | entering a battle | 0.43-0.48x | 0.53-0.65x |
+| 11-04 | **Asynchronous present**, GL render thread on by default | battle | 0.67x | **0.80-0.90x (+26%)** |
 
 Where it stands with this repository's defaults: about **0.8-0.9x** at the spot right off the opening train, about
-**0.7-0.8x** in heavier areas later on, and **0.6-0.7x** during battles. Audio crackles when it is under full speed.
+**0.7-0.8x** in heavier areas later on, and **0.8-0.9x** during battles. Audio crackles when it is under full speed.
 
 ## What was improved
 
@@ -198,28 +199,30 @@ Work done on this port, with the reason for each (the engine changes are on
 - **The phone app**: Continue waits for the disc to boot before loading the state (the V30 takes about 14 seconds), an
   Import memory card button, an optional start-screen picture, and an on-screen pad that redraws only when it changes
   (11% of the app's work while touching the pad before, under 0.1% after).
-- **GL render thread** (optional): all GPU work runs on its own thread, next to the game. Off by default for now; to try
-  it, add `gl_thread = true` under `[video]` in `game\game.toml.in`, run steps 2, 4 and 5 again, then
-  tap **Select game file** on the phone and pick the discs again (see [Updating](#updating)).
+- **GL render thread** (on by default): all GPU work runs on its own thread, next to the game. The game no longer
+  waits for each frame to be shown (up to two frames queue ahead), and the graphics context moves between threads only
+  when Android pauses the app. To turn it off, set `gl_thread = false` under `[video]` in `game\game.toml.in`, run
+  steps 2, 4 and 5 again, then tap **Select game file** on the phone and pick the discs again (see
+  [Updating](#updating)). An existing install keeps its own settings: add `gl_thread = true` there to get it.
 - **This repository**: one place to build everything, the copyright guard, and build scripts that also work on locked-
   down PCs (PowerShell's Constrained Language Mode).
 
 ## Known issues
 
-- **Under full speed on older phones**: battles and some menus on the LG V30 run at 0.6-0.7x, and the audio crackles
-  while the game runs slower than full speed.
+- **Under full speed on older phones**: battles on the LG V30 run at 0.8-0.9x and some menus slower, and the audio
+  crackles while the game runs slower than full speed.
+- **Movies are slow on the LG V30**: the opening movie (and the "presents" screen before it) runs at about 0.3x. FF7
+  waits for each movie frame in a loop the engine does not skip yet; this is not caused by faster battle loading.
+  Being worked on.
 - **Dark rectangles where FF7 draws a glow** in some places with the GPU renderer (the Software renderer draws them
   right). Being looked into.
 - **Two pieces of FF7's disc code do not pre-compile**; they run on the engine's interpreter (slower, still correct).
-- **Faster battle loading is new**: it has not been checked during FMV movies yet. If a movie misbehaves, remove the
-  `[load_accel.vsync_query]` section from `game\game.toml` and build again.
 - **Several ports open at once** can run a 4 GB phone out of memory: close other games before playing.
 - **Retail FF7** discs are not supported yet (see What you need).
 
 ## What's next
 
-- **Asynchronous present** for the GL render thread: in testing it took V30 battles from **0.67x to 0.80-0.90x
-  (+26%)** and is planned as the next engine update for this repository, with the render thread on by default.
+- The slow movies on the V30 (FF7's movie frame wait).
 - The slow menus on the V30.
 - The dark-rectangle glow bug in the GPU renderer.
 - A full build on a PC with nothing installed, and retail FF7 discs.
