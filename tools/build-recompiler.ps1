@@ -11,7 +11,17 @@ if ($Framework) { $FrameworkDir = $Framework }
 $src = Join-Path $FrameworkDir "recompiler"
 $out = Join-Path $src "build-mingw"
 $exe = Join-Path $out "psxrecomp-game.exe"
-if ((Test-Path $exe) -and -not $Force) { Write-Host "OK   recompiler: $exe"; exit 0 }
+if ((Test-Path $exe) -and -not $Force) {
+    # Up to date only if it was built from this engine's code generator (a framework update can change it;
+    # 2-PREPARE then stops with "the recompiler is older than the engine").
+    $py = Find-Python
+    $check = Join-Path $PSScriptRoot "codegen_hash.py"
+    if ($py -and (Test-Path $check)) {
+        & $py $check $FrameworkDir --recompiler $exe *> $null
+        if ($LASTEXITCODE -eq 2) { Write-Host "recompiler is older than the engine: rebuilding" }
+        else { Write-Host "OK   recompiler: $exe"; exit 0 }
+    } else { Write-Host "OK   recompiler: $exe"; exit 0 }
+}
 
 # 1. llvm-mingw (the same release the existing builds used).
 $llvmTag = "20260922"
