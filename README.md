@@ -1,5 +1,12 @@
 # Final Fantasy VII Shinra Archaeology Cut for Android
 
+<p align="center">
+  <img src="docs/images/shinra-archaeology-cut.png" width="60%" alt="Final Fantasy VII: Shinra Archaeology Cut title logo">
+</p>
+
+> **This is the Shinra Archaeology Cut mod, not the original release.** The port is built and tested with the Shinra
+> Archaeology Cut v1.0.5 discs. Retail Final Fantasy VII discs are not supported yet (see What you need).
+
 A native Android port of **Final Fantasy VII** (PlayStation), in the **Shinra Archaeology Cut v1.0.5** edition, made
 by *static recompilation*. The game's main program is translated to C and compiled for your phone ahead of time, and
 so is the code FF7 loads from the disc while it plays (the field, battles, the world map, the menus), instead of
