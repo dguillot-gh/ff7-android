@@ -13,7 +13,7 @@ param([string]$Serial = "", [switch]$NoDiscs, [string]$Card = "", [switch]$DryRu
 
 if ($Serial) { $env:ANDROID_SERIAL = $Serial }
 $apk = Get-ChildItem $ApkDir -Filter "$Game-*.apk" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1
-if (-not $apk -and -not $DryRun) { Fail "no APK in $ApkDir: run scripts\4-BUILD-ANDROID.ps1 first" }
+if (-not $apk -and -not $DryRun) { Fail "no APK in ${ApkDir}: run scripts\4-BUILD-ANDROID.ps1 first" }
 $phone = Join-Path $Repo "tools\phone.ps1"
 $backup = Join-Path $Workspace "saves-backup"
 $dry = @(); if ($DryRun) { $dry = @("-DryRun") }
