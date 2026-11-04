@@ -109,5 +109,5 @@ $exe = if ($toml -match '(?m)^exe\s*=\s*"([^"]+)"') { $Matches[1] } else { "?" }
 $seeds = @(Get-Content (Join-Path $dest "seeds\ghidra_funcs.txt") | Where-Object { $_ -match '^0x' }).Count
 Write-Host "OK: new game $Name in $dest"
 Write-Host "    id $id, boot program $exe, $($cues.Count) disc(s), $seeds code entry points to start from"
-Write-Host "Next: pwsh -File go.ps1 -Game $Name"
+Write-Host "Next: the build folder and the game's code (scripts\2-PREPARE.ps1 goes on by itself)"
 exit 0
