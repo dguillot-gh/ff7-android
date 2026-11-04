@@ -1,0 +1,43 @@
+# Android runtime config, written by the start menu after the user selects
+# their own disc image (it fills the disc placeholder).
+[game]
+name = "Final Fantasy VII Shinra Archaeology Cut"
+id = "SCUS-94163"
+players = 1
+exe = "disc/SCUS_941.63"
+discs = [
+  @@DISC1@@,
+  @@DISC2@@,
+  @@DISC3@@,
+]
+load_address = "0x80010000"
+entry_pc = "0x800110C0"
+text_size = "0x00060800"
+stack_base = "0x801FFFF0"
+
+[recompiler]
+seeds = "seeds/ghidra_funcs.txt"
+out_dir = "generated"
+strict = true
+
+[runtime]
+video_renderer = "software"
+overlay_cache = true
+# Speed defaults for weak phones (LG V30, 2026-11-03): skip the PsyQ VSync wait loop.
+idle_skip = true
+
+[controller]
+default_mode = "digital"
+lock_mode = true
+allow_hybrid = false
+
+[bios]
+path = "bios/openbios.bin"
+
+# Defaults (LG V30 measurements 2026-11-03, D:\phoneperf\FINDINGS.md): GPU 2x with vsync off ran
+# 0.88x of full speed vs 0.60x for Software 1x. The in-game menu still changes all of these.
+[video]
+renderer = "opengl"
+supersampling = 2
+vsync = "off"
+texture_filtering = "stable"

@@ -36,7 +36,7 @@ BATINI/BATRES/BROM/ENDING 100%, DSCHANGE (no internal calls) accepted as named +
 spells actually cast arrive via play captures. PATYMENU.MNU is too small to verify (play captures cover it).
 The runtime only runs a pre-compiled piece whose bytes match RAM, so a wrong module cannot run wrong code.
 
-## Brought along
-- `memcard-import\Final Fantasy VII (USA)_1.mcd`: the user's DuckStation card (128 KB); go.ps1 imports it into a
-  fresh app install, never over an existing card.
-- `launcher_assets\img\boxart.png`: retail FF7 cover (libretro-thumbnails), used for the app icon.
+## Speed settings (2026-11-03/04, LG V30)
+`game.toml.in` (the app defaults): OpenGL 2x, vsync off, texture_filtering "stable", idle_skip. `game.toml`:
+`[load_accel.vsync_query]` (faster battle loading; FF7's PsyQ VSync at 0x8003CEDC, checked on these discs).
+Measurements and decisions: the engine repository's FINDINGS (FF7 section).
