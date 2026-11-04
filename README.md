@@ -11,17 +11,36 @@ being emulated. The rest of the console (graphics, sound, CD drive, controllers)
 > discs on your PC, and nothing made from them is ever committed or shared. Please do not share the builds you make
 > (the build folder and the APK contain the game).
 
+## Pictures
+
+All taken on a **Pixel 8** with this repository's build (OpenGL renderer at 4x, `stable` texture filter), at full
+speed: the FPS figure at the right is the game's own counter.
+
 <p>
-  <img src="docs/images/pixel8-gameplay.png" width="100%" alt="Pixel 8: FF7 in the field with the on-screen pad, 60 FPS">
+  <img src="docs/images/pixel8-field.png" width="100%" alt="Pixel 8: Cloud on the Sector 1 platform after the opening train, 61 FPS">
 </p>
-<p><em>Pixel 8, OpenGL renderer: full speed (60 FPS on the game's own counter), with the movable on-screen pad.</em></p>
+<p><em>The first field scene, right off the opening train, with the on-screen pad.</em></p>
+
 <p>
-  <img src="docs/images/pixel8-launcher.png" width="70%" alt="The start screen: Continue, Play, Select game file, Import memory card">
+  <img src="docs/images/pixel8-battle.png" width="49%" alt="Pixel 8: the first battle against two MPs, battle menu open, 60 FPS">
+  <img src="docs/images/pixel8-movie.png" width="49%" alt="Pixel 8: the opening movie, 60 FPS">
 </p>
-<p><em>The start screen: Continue from a save slot, Play, pick your discs, or import a memory card of your own.</em></p>
+<p><em>The first battle (left) and the opening movie (right).</em></p>
+
+<p>
+  <img src="docs/images/pixel8-title.png" width="49%" alt="Pixel 8: the title screen with New Game and Continue">
+  <img src="docs/images/pixel8-menu.png" width="49%" alt="Pixel 8: the field menu on the Cargo Ship, 60 FPS">
+</p>
+<p><em>The title screen (left) and the field menu, later on the Cargo Ship (right).</em></p>
+
+<p>
+  <img src="docs/images/pixel8-launcher.png" width="60%" alt="The start screen: Continue, Play, Select game file, Import memory card">
+</p>
+<p><em>The app's start screen: Continue from a save slot, Play, pick your discs, or import a memory card of your own.</em></p>
 
 ## Contents
 
+- [Pictures](#pictures)
 - [Quick start](#quick-start)
 - [What you need](#what-you-need)
 - [Building it, step by step](#building-it-step-by-step)
@@ -156,6 +175,7 @@ from the next by about 10%, so every result below compares the two builds in alt
 | 2026-10-07 | first Android build (older engine) | plays; about 50 FPS in the opening movie |
 | 2026-11-04 | `stable` texture filter, GPU 4x | **1.00x** |
 | 2026-11-04 | **this repository, built from a fresh clone** | **1.00x, 60 FPS** in the field (OpenGL); Continue, saves and settings all fine |
+| 2026-11-04 | the same build, played for the pictures above | **1.00x** on the title screen, in the opening movie, the first field scene, the first battle and the Cargo Ship menu |
 
 ### LG V30 (Snapdragon 835, Adreno 540, Android 8, 2017)
 
@@ -211,8 +231,9 @@ Work done on this port, with the reason for each (the engine changes are on
 - **Dark rectangles where FF7 draws a glow** in some places with the GPU renderer (the Software renderer draws them
   right). Being looked into.
 - **Two pieces of FF7's disc code do not pre-compile**; they run on the engine's interpreter (slower, still correct).
-- **Faster battle loading is new**: it has not been checked during FMV movies yet. If a movie misbehaves, remove the
-  `[load_accel.vsync_query]` section from `game\game.toml` and build again.
+- **Faster battle loading is new**: the opening movie plays at full speed with it on the Pixel 8; the other movies and
+  older phones have not been checked yet. If a movie misbehaves, remove the `[load_accel.vsync_query]` section from
+  `game\game.toml` and build again.
 - **Several ports open at once** can run a 4 GB phone out of memory: close other games before playing.
 - **Retail FF7** discs are not supported yet (see What you need).
 
