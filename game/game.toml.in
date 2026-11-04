@@ -42,3 +42,11 @@ supersampling = 2
 vsync = "off"
 texture_filtering = "stable"
 gl_thread = true
+
+[load_accel.vsync_query]
+func = "0x8003CEDC"
+counter_addr = "0x80051568"
+gpustat_ptr_addr = "0x8005049C"
+timer1_ptr_addr = "0x800504A0"
+timer1_cache_addr = "0x800504A4"
+event_horizon_sites = ["0x8003EA50", "0x8003ECDC", "0x80041E60", "0x80041E90"]
