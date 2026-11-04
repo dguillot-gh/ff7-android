@@ -24,9 +24,10 @@ if (Test-Path (Join-Path $RecompDir "game.toml")) {
         $mine = Get-Content (Join-Path $RecompDir "game.toml") -Raw
         $discBlock = [regex]::Match($mine, '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n(disc\s*=\s*".*"\s*\r?\n)?').Value
         $ours = Get-Content (Join-Path $Repo "game\game.toml") -Raw
-        $ours = [regex]::Replace($ours, '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n', '')
-        $ours = [regex]::Replace($ours, '(?m)^disc\s*=\s*".*"\s*\r?\n', '')
-        $ours = [regex]::Replace($ours, '(?m)^(exe\s*=\s*".*")\s*\r?\n', { param($m) $m.Groups[1].Value + "`n" + $discBlock }, 1)
+        # -replace, not [regex]::Replace with a script block (Constrained Language Mode garbles that).
+        $ours = $ours -replace '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n', ''
+        $ours = $ours -replace '(?m)^disc\s*=\s*".*"\s*\r?\n', ''
+        $ours = $ours -replace '(?m)^(exe\s*=\s*".*?")[ \t]*\r?\n', ('${1}' + "`n" + $discBlock.Replace('$', '$$'))
         Set-Content (Join-Path $RecompDir "game.toml") $ours -Encoding utf8NoBOM -NoNewline
         foreach ($d in "seeds", "tools") { Copy-Item (Join-Path $Repo "game\$d") $RecompDir -Recurse -Force }
     }
@@ -67,7 +68,7 @@ if ($DryRun) {
         $drawable = Join-Path $GameDir "android\app\src\main\res\drawable"
         New-Item -ItemType Directory -Force $drawable | Out-Null
         Get-ChildItem $drawable -Filter "launcher_bg.*" | Remove-Item -Force
-        Copy-Item -LiteralPath $Background (Join-Path $drawable ("launcher_bg" + [IO.Path]::GetExtension($Background).ToLower())) -Force
+        Copy-Item -LiteralPath $Background (Join-Path $drawable ("launcher_bg" + (Get-Item -LiteralPath $Background).Extension.ToLower())) -Force
         Say "start-screen background: $Background"
     }
 }

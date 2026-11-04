@@ -9,7 +9,9 @@ param(
 $ErrorActionPreference = "Stop"
 
 $template = (Resolve-Path (Join-Path $PSScriptRoot "..\template\android")).Path
-$dest = Join-Path ([IO.Path]::GetFullPath($OutDir)) "android"
+# No [IO.Path]/script-block regex calls here: Constrained Language Mode PCs block or garble them.
+New-Item -ItemType Directory -Force $OutDir | Out-Null
+$dest = Join-Path (Resolve-Path -LiteralPath $OutDir).Path "android"
 if ($dest.StartsWith($template, [StringComparison]::OrdinalIgnoreCase)) { throw "OutDir must not be inside the template" }
 
 New-Item -ItemType Directory -Force $dest | Out-Null
@@ -28,10 +30,10 @@ Get-ChildItem $dest -Recurse -File |
 $values = Join-Path $dest "app\src\main\res\values"
 function Set-StringRes([string]$file, [string]$name, [string]$value) {
     $c = Get-Content $file -Raw
-    $esc = [System.Security.SecurityElement]::Escape($value)
+    $esc = $value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace('"', "&quot;")
     $pat = '(<string\s+name="' + [regex]::Escape($name) + '"[^>]*>)[^<]*(</string>)'
     if ($c -notmatch $pat) { throw "string '$name' not found in $file" }
-    $new = [regex]::Replace($c, $pat, { param($m) $m.Groups[1].Value + $esc + $m.Groups[2].Value })
+    $new = $c -replace $pat, ('${1}' + $esc.Replace('$', '$$') + '${2}')
     Set-Content $file $new -NoNewline
 }
 $strings = Join-Path $values "strings.xml"

@@ -31,7 +31,8 @@ $Supported = @(
 )
 
 New-Item -ItemType Directory -Force $LogDir | Out-Null
-$script:LogFile = Join-Path $LogDir ("{0}-{1}.log" -f [IO.Path]::GetFileNameWithoutExtension($MyInvocation.PSCommandPath), (Get-Date -Format "yyyyMMdd-HHmmss"))
+# Plain cmdlets only in these scripts: PCs in Constrained Language Mode block [IO.Path] and similar calls.
+$script:LogFile = Join-Path $LogDir ("{0}-{1}.log" -f (Split-Path $MyInvocation.PSCommandPath -LeafBase), (Get-Date -Format "yyyyMMdd-HHmmss"))
 function Say([string]$msg) {
     $line = "[{0}] {1}" -f (Get-Date -Format "HH:mm:ss"), $msg
     Write-Host $line
@@ -58,7 +59,8 @@ function Find-Discs {
         Say "checking $($cue.Name) ..."
         $sha = (Get-FileHash -LiteralPath $bins[0] -Algorithm SHA1).Hash.ToLower()
         foreach ($s in $Supported) {
-            $i = [array]::IndexOf($s.Sha1, $sha)
+            $i = -1
+            for ($k = 0; $k -lt $s.Sha1.Count; $k++) { if ($s.Sha1[$k] -eq $sha) { $i = $k } }
             if ($i -ge 0) { $found[$i] = $cue.FullName; Say "  disc $($i + 1) of $($s.Name)" }
         }
         if (-not ($Supported | Where-Object { $_.Sha1 -contains $sha })) { Say "  not a supported dump (SHA-1 $sha)" }

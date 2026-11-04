@@ -87,9 +87,10 @@ if (Test-Path (Join-Path $known "game.toml")) {
     }
     # [game]: drop the repo's disc/discs lines, put this PC's disc names right after `exe =`.
     $discLines = "discs = [`n" + (($cues | ForEach-Object { "  `"$_`"," }) -join "`n") + "`n]`ndisc = `"$($cues[0])`""
-    $ours = [regex]::Replace($ours, '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n', '')
-    $ours = [regex]::Replace($ours, '(?m)^disc\s*=\s*".*"\s*\r?\n', '')
-    $ours = [regex]::Replace($ours, '(?m)^(exe\s*=\s*".*")\s*$', { param($m) $m.Groups[1].Value + "`n" + $discLines }, 1)
+    # -replace, not [regex]::Replace with a script block: Constrained Language Mode turns that into text.
+    $ours = $ours -replace '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n', ''
+    $ours = $ours -replace '(?m)^disc\s*=\s*".*"\s*\r?\n', ''
+    $ours = $ours -replace '(?m)^(exe\s*=\s*".*?")[ \t]*\r?$', ('${1}' + "`n" + $discLines.Replace('$', '$$'))
     Set-Content (Join-Path $dest "game.toml") $ours -Encoding utf8NoBOM -NoNewline
     foreach ($d in "seeds", "tools") {
         $s = Join-Path $known $d
