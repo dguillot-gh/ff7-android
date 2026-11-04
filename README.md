@@ -150,7 +150,9 @@ pwsh -File scripts\RUN-ALL.ps1 -Install
 ```
 
 Finished parts are skipped; the game's code is generated again only when the engine or `game\game.toml` changed. An
-update keeps your saves, save states and settings on the phone. New default settings (`game\game.toml.in`) reach an
+update keeps your saves, save states and settings on the phone. **Exception, the move to the newer upstream engine
+(November 2026): save states made by earlier builds do not load** (the start screen says so); your memory card saves
+are not affected, so save in the game before updating. New default settings (`game\game.toml.in`) reach an
 app that is already installed only when you tap **Select game file** and pick the discs again; that resets the menu's
 settings to the new defaults and leaves saves and save states alone.
 
@@ -158,9 +160,11 @@ settings to the new defaults and leaves saves and save states alone.
 
 - **The pad**: touch controls for every PS1 button. In **Edit pad layout** (in the menu) drag each control where you
   want it, make it smaller or bigger, change its opacity, or hide it. A Bluetooth or USB gamepad works too.
-- **The menu** (the ≡ button at the top): renderer (**Software** or **GPU (experimental)**), internal resolution, **Smooth textures**,
-  perspective-correct textures, anti-aliasing, the FPS counter, the pad, **save states** (12 slots, each with its
-  time), changing discs, restart and quit.
+- **The menu** (the ≡ button at the top): renderer (**Software** or **GPU**), internal resolution, aspect ratio,
+  **Smooth textures**, perspective-correct textures, anti-aliasing, the FPS counter, the pad, **save states** (12 slots,
+  each with its time), changing discs, restart and quit. Resolution, aspect ratio, smooth textures and anti-aliasing
+  change while you play; the renderer and perspective-correct textures need a restart.
+- **Settings** on the start screen: the same display settings before the game starts.
 - **Continue**: the start screen's Continue picks up where you left off, from the slot you choose.
 - **Your PS1 saves**: the game's own memory card saves work as on a PS1 and are separate from save states. **Import
   memory card** on the start screen brings in a card of your own.
@@ -244,6 +248,9 @@ Work done on this port, with the reason for each (the engine changes are on
   batches instead of one word per event (`dma_word_batch = 32` under `[runtime]` in `game\game.toml.in`, the same
   batching upstream psxrecomp uses); the CD drive no longer reports an already-delivered response as due every few
   cycles until the game acknowledges it; and the idle skip now recognises FF7's "wait for the next movie frame" loop.
+- **Newer upstream engine** (November 2026): the port now builds on current psxrecomp (about 1,100 upstream changes:
+  faster native code paths, fixes), with this port's Android work carried over, display settings that change while
+  you play, and a Settings button on the start screen.
 - **This repository**: one place to build everything, the copyright guard, and build scripts that also work on locked-
   down PCs (PowerShell's Constrained Language Mode).
 
@@ -258,10 +265,12 @@ Work done on this port, with the reason for each (the engine changes are on
 - **Two pieces of FF7's disc code do not pre-compile**; they run on the engine's interpreter (slower, still correct).
 - **Several ports open at once** can run a 4 GB phone out of memory: close other games before playing.
 - **Retail FF7** discs are not supported yet (see What you need).
+- **Software renderer with 16:9** shows a 4:3 picture (the 16:9 stretch only works with the GPU renderer).
+- **Save states from builds before the upstream engine move** do not load (memory card saves do).
 
 ## What's next
 
-- The rest of the movie speed on the V30, and moving this port onto the newer upstream engine.
+- The rest of the movie speed on the V30.
 - The slow menus on the V30.
 - The dark-rectangle glow bug in the GPU renderer.
 - A full build on a PC with nothing installed, and retail FF7 discs.

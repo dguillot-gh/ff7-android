@@ -25,7 +25,12 @@ video_renderer = "software"
 overlay_cache = true
 # Speed defaults for weak phones (LG V30, 2026-11-03): skip the PsyQ VSync wait loop.
 idle_skip = true
-dma_word_batch = 32
+# Upstream store-counter idle skip (docs/config_schema.md): FF7's VSync() at 0x8003D024 is
+# PsyQ v_wait (timeout<<15 at sp+16, only exit on the counter is the == -1 timeout): its two
+# check PCs per turn are the audited sites. The movie frame wait (0x80035DC8, three loop PCs) is a pure
+# wait: 5-16 checks per pass (incl. 0x80040BC4/0x80040C80), no stores, no MMIO, no counter-dependent exit.
+idle_skip_store_counters = true
+idle_skip_store_counter_sites = ["0x8003D04C", "0x8003D098", "0x80035DD8", "0x80035DE8", "0x80035DF0"]
 
 [controller]
 default_mode = "digital"
