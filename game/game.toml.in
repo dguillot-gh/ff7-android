@@ -25,6 +25,7 @@ video_renderer = "software"
 overlay_cache = true
 # Speed defaults for weak phones (LG V30, 2026-11-03): skip the PsyQ VSync wait loop.
 idle_skip = true
+dma_word_batch = 32
 
 [controller]
 default_mode = "digital"
