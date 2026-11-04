@@ -41,3 +41,4 @@ renderer = "opengl"
 supersampling = 2
 vsync = "off"
 texture_filtering = "stable"
+gl_thread = true
