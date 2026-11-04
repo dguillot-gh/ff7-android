@@ -196,6 +196,7 @@ the work started (2026-11-02) FF7 ran at about half speed on it. Each row adds o
 | 11-04 | GL render thread (optional, see below) | a later save, standing | 0.707x | **0.807x (+14%)** |
 | 11-04 | Faster battle loading (`load_accel`) | entering a battle | 0.43-0.48x | 0.53-0.65x |
 | 11-04 | **Asynchronous present**, GL render thread on by default | battle | 0.67x | **0.80-0.90x (+26%)** |
+| 11-04 | **One upload per batch** for 24-bit screens | Sony / Squaresoft startup screens | 0.30x | **0.82-0.98x** |
 
 Where it stands with this repository's defaults: about **0.8-0.9x** at the spot right off the opening train, about
 **0.7-0.8x** in heavier areas later on, and **0.8-0.9x** during battles. Audio crackles when it is under full speed.
@@ -226,6 +227,10 @@ Work done on this port, with the reason for each (the engine changes are on
   when Android pauses the app. To turn it off, set `gl_thread = false` under `[video]` in `game\game.toml.in`, run
   steps 2, 4 and 5 again, then tap **Select game file** on the phone and pick the discs again (see
   [Updating](#updating)). An existing install keeps its own settings: add `gl_thread = true` there to get it.
+- **24-bit screens** (the Sony and Squaresoft startup screens): the game writes them into video memory as thousands of
+  small pieces a second, and each piece cost two texture uploads with a large fixed cost in the V30's graphics driver.
+  Each batch of pieces is now uploaded once, and only the pieces themselves are drawn from it. This also fixed batches
+  of more than eight pieces drawing some of them from the wrong upload.
 - **This repository**: one place to build everything, the copyright guard, and build scripts that also work on locked-
   down PCs (PowerShell's Constrained Language Mode).
 
@@ -233,9 +238,10 @@ Work done on this port, with the reason for each (the engine changes are on
 
 - **Under full speed on older phones**: battles on the LG V30 run at 0.8-0.9x and some menus slower, and the audio
   crackles while the game runs slower than full speed.
-- **Movies are slow on the LG V30**: the opening movie (and the "presents" screen before it) runs at about 0.3x. FF7
-  waits for each movie frame in a loop the engine does not skip yet; this is not caused by faster battle loading.
-  On the Pixel 8 the same movie plays at full speed. Being worked on.
+- **Movies are slow on the LG V30**: the opening movie runs at about 0.3x (the startup screens before it are now at
+  0.8-1.0x). While a movie streams from the disc, the engine keeps the PS1's timers, CD drive, movie decoder and sound
+  in step about 230,000 times a second, and that is what the V30's CPU cannot keep up with; this is not caused by
+  faster battle loading. On the Pixel 8 the same movie plays at full speed. Being worked on.
 - **Dark rectangles where FF7 draws a glow** in some places with the GPU renderer (the Software renderer draws them
   right). Being looked into.
 - **Two pieces of FF7's disc code do not pre-compile**; they run on the engine's interpreter (slower, still correct).
@@ -244,7 +250,7 @@ Work done on this port, with the reason for each (the engine changes are on
 
 ## What's next
 
-- The slow movies on the V30 (FF7's movie frame wait).
+- The slow movies on the V30 (cheaper device timing while a movie streams).
 - The slow menus on the V30.
 - The dark-rectangle glow bug in the GPU renderer.
 - A full build on a PC with nothing installed, and retail FF7 discs.
