@@ -22,7 +22,7 @@ if (Test-Path (Join-Path $RecompDir "game.toml")) {
     if (-not $DryRun) {
         # Keep this PC's disc names; take everything else from the repository's game.toml.
         $mine = Get-Content (Join-Path $RecompDir "game.toml") -Raw
-        $discBlock = [regex]::Match($mine, '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n(disc\s*=\s*".*"\s*\r?\n)?').Value
+        $discBlock = [regex]::Match($mine, '(?ms)^discs\s*=\s*\[.*?^\][ \t]*\r?\n(disc[ \t]*=[ \t]*"[^"\r\n]*"[ \t]*\r?\n)?').Value
         $ours = Get-Content (Join-Path $Repo "game\game.toml") -Raw
         # -replace, not [regex]::Replace with a script block (Constrained Language Mode garbles that).
         $ours = $ours -replace '(?ms)^discs\s*=\s*\[.*?^\]\s*\r?\n', ''
