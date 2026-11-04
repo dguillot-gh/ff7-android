@@ -61,6 +61,20 @@ function Backup {
             Write-Host "$c : backed up to $t"
         }
     }
+    # Save states (files/<bios>/state_*.pst + .thumb) and the app's settings (game.toml, input.ini).
+    # Copied as they are; a size check against the phone catches a short copy.
+    if ($DryRun) { Write-Host "would also back up the save states and settings"; return }
+    $states = @(& $Adb shell run-as $Package find files -maxdepth 2 -name "state_*" -type f 2>$null |
+                ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^files/[^/]+/state_[^/]+$' })
+    foreach ($f in @("files/game.toml", "files/input.ini") + $states) {
+        $size = ((& $Adb shell run-as $Package stat -c %s $f 2>$null) -join "").Trim()
+        if ($size -notmatch '^\d+$') { continue }
+        $t = Join-Path $dir ($f -replace '^files/', '' -replace '/', '\')
+        New-Item -ItemType Directory -Force (Split-Path $t) | Out-Null
+        Invoke-Adb @("exec-out", "run-as", $Package, "cat", $f) $t
+        if ((Get-Item $t).Length -ne [long]$size) { Write-Host "FAIL: $f backup is short. Nothing was installed."; exit 1 }
+    }
+    Write-Host ("save states: {0} file(s) backed up to {1}" -f $states.Count, $dir)
 }
 
 function Connect {
