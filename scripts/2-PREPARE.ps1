@@ -109,6 +109,8 @@ if (-not $DryRun) {
     & $py (Join-Path $Repo "tools\codegen_hash.py") (Join-Path $GameDir "psxrecomp") --recompiler $local 2>&1 | Out-Host
     if ($LASTEXITCODE -eq 2) { Fail "the recompiler is older than the engine: run scripts\1-INSTALL-TOOLS.ps1 again" }
     if ($LASTEXITCODE -ne 0) { Fail "could not write the codegen hash header" }
+    # The cover archive names FF7's cover "Final Fantasy VII (USA)", not after the disc file.
+    Copy-Item (Join-Path $Repo "game\boxart-name.txt") $GameDir -Force
     pwsh -NoProfile -File (Join-Path $Repo "tools\icon.ps1") -GameDir $GameDir 2>&1 | Out-Host
 }
 Say "OK: prepared. Next: scripts\3-PRECOMPILE.ps1"
